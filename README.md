@@ -4,7 +4,7 @@
 ##### Yingkun Hou, Jun Xu, Mingxia Liu, Guanghai Liu, Li Liu, Fan Zhu, and Ling Shao, "NLH: A Blind Pixel-level Non-local Method for Real-world Image Denoising", IEEE Transactions on Image Processing, vol. 29, pp. 5121-5135, 2020.
 
 * Email: ykhou@tsu.edu.cn
-* The code is built on Matlab 2018a.
+* The code is built on Matlab 2018a for Windows 10 and macOS Catalina 10.15.4.
 
 * The folder `NLH_AWGN_Gray` includes gray scale images Additive Gaussian White Noise denosing codes and some gray scale images.
 
