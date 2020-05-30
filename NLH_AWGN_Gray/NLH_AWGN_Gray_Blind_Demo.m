@@ -2,6 +2,8 @@
 clear all
 close all
 
+clc
+
 
 image_name = [
 %     'Cameraman256.png'
@@ -20,7 +22,7 @@ image_name = [
 %%%%  Specify the std. dev. of the corrupting noise
 %%%%
 if (exist('sigma') ~= 1),
-    sigma               = 50; %% default standard deviation of the AWGN
+    sigma               = 15; %% default standard deviation of the AWGN
 end
 
 
@@ -52,9 +54,9 @@ sigma_est = double(sigma_est)
 [dis_map,sigma_tb1] = NL_distance(8,16,2,39,single(8),double(im));
 dis_map = double(dis_map);
 %%%%%%%%%%%%%%%%%% 
-Ns     = 43;    % neighborhood of block-matching
-N3     = 4;     % number of row in similar pixel group
-N2     = 16;    % number of column in similar pixel group
+Ns     = 43;
+N3     = 4;
+N2     = 16;
 
 %%%%%%%%%%%%%%%%%
 tic,
@@ -71,17 +73,17 @@ lamda = 0.8;
 Thr = 1.45;
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   iteration times
 if sigma_est < 7.5
-    k = 2;      % number of iteration
-    N_step = 4; % step size
-    N1     = 9; % size of image block 
+    k = 2;
+    N_step = 5;
+    N1     = 9;
 elseif sigma_est >= 7.5 && sigma_est < 12.5
     k = 3;
     N_step = 5;
     N1     = 9;
  elseif sigma_est >= 12.5 && sigma_est < 35
-    k = 4;
+    k = 3;
     N_step = 6;
     N1     = 9;
  elseif sigma_est >= 35 && sigma_est < 55
@@ -111,7 +113,7 @@ for ll = 1:k
         sigma_est, double(lamda*imr+(1-lamda)*im));
      
   
-         PSNR = 10*log10(1/mean((im1(:)-double(imr(:))).^2));
+          PSNR = 10*log10(1/mean((im1(:)-double(imr(:))).^2));
  
          figure,imshow(double(imr));
 
@@ -132,25 +134,25 @@ toc,
 imr = double(imr);
 
 
-
 PSNR = 10*log10(1/mean((im1(:)-imr(:)).^2));
  figure,imshow(imr);title(sprintf('Denoised %s, PSNR: %.3f dB', ...
         image_name(1:end-4), PSNR));
  
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%% Noise level estimation of basic estimation result
+%%%%%%%% Noise level estimation
 
 [sigma_tb1 sigma_est1 dis_map1] = Noise_estimation(imr); %% estimate noisy level
 
-sigma_est1 = double(sigma_est1);
+sigma_est1 = double(sigma_est1)
+
 
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%% NLH_wiener
-N2 = 64;  % number of column in similar pixel group
-N3 = 8;   % number of row in similar pixel group 
-Ns = 129; % neighborhood of block-matching
+N2 = 64;
+N3 = 8;
+Ns = 129;
 
 
 if sigma_est < 25
@@ -180,14 +182,20 @@ beta = 0.8;
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Stage two: Wiener filtering
+
 tic,
        
          y_est = NLH_AWGN_Wiener_Gray(N1,N2,N3,Ns,N_step1,double(im),single(gamma),...
                 sigma_est/255, double(dis_map),beta,double(imr*gamma),double(imr*beta+im*(1-beta)));            
     
                 y_est=double(y_est);
-                 
-                            
+         
+         
+          PSNR = 10*log10(1/mean((im1(:)-y_est(:)).^2));        
+          figure,imshow(y_est);title(sprintf('Denoised  PSNR: %.3f dB',PSNR));
+ 
+                       
         y_est = NLH_AWGN_Wiener_Gray(N1,N2,N3,Ns,N_step2,double(y_est),single(gamma),...
                 sigma_est/255, double(dis_map),beta,double(imr*gamma),double(y_est*beta+im*(1-beta)));
      
@@ -209,7 +217,10 @@ L = 1;
 
 fprintf('FINAL ESTIMATE, MSSIM: %.4f dB\n', mssim);
 
+% figure,imshow(ssim_map);
 
+
+ 
 
 
 
