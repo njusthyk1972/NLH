@@ -14,3 +14,5 @@ denoising. In CVPR, pages 1683–1691, 2016."
 * The folder `NLH_DND` only includes denoising codes for DND dataset, the dataset can be downloaded from the following website:     https://noise.visinf.tu-darmstadt.de/. The related information refers to "T.  Plo¨tz  and  S.  Roth.   Bench                                 algorithms  with  real photographs.  In CVPR, 2017."
  
 ### Note: If one wants to conduct AWGN denoising on color images, please change "sigma_est_b = sigma_est\*4.0" to "sigma_est_b = sigma_est\*1.0" in NLH_CC.m line 47 and NLH_DND.m line 72 respectively.
+
+### Note: We have updated NLH code named NLH_v2.0.zip. We added some faster codes in this version.
